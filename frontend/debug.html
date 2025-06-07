@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Modal Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex !important;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug - Login Modal Test</h1>
+    
+    <div class="test-section">
+        <h3>Step 1: Test Buttons</h3>
+        <p>Click these buttons to test if event handlers are working:</p>
+        <button id="login-btn" class="btn btn-secondary">Login</button>
+        <button id="register-btn" class="btn btn-primary">Sign Up</button>
+        <button id="test-modal-btn" class="btn btn-secondary">Test Modal Direct</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Step 2: Debug Log</h3>
+        <div id="debug-log" class="log">Debug messages will appear here...</div>
+        <button onclick="clearLog()" class="btn btn-secondary">Clear Log</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Step 3: Element Check</h3>
+        <button onclick="checkElements()" class="btn btn-secondary">Check Elements</button>
+        <div id="element-status"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="auth-modal-title">Login</h2>
+                <button class="modal-close" id="auth-modal-close">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label for="auth-username">Username</label>
+                        <input type="text" id="auth-username" name="username" value="demo_user">
+                    </div>
+                    
+                    <div class="form-group" id="email-group" style="display: none;">
+                        <label for="auth-email">Email</label>
+                        <input type="email" id="auth-email" name="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="auth-password">Password</label>
+                        <input type="password" id="auth-password" name="password" value="password123">
+                    </div>
+                    
+                    <button type="submit" id="auth-submit" class="btn btn-primary">Login</button>
+                    <button type="button" onclick="hideModal()" class="btn btn-secondary">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function debugLog(message) {
+            const log = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `[${timestamp}] ${message}<br>`;
+            log.scrollTop = log.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('debug-log').innerHTML = 'Debug log cleared...<br>';
+        }
+        
+        function showModal() {
+            debugLog('📱 Showing modal...');
+            const modal = document.getElementById('auth-modal');
+            modal.classList.add('show');
+        }
+        
+        function hideModal() {
+            debugLog('❌ Hiding modal...');
+            const modal = document.getElementById('auth-modal');
+            modal.classList.remove('show');
+        }
+        
+        function checkElements() {
+            const elements = [
+                'login-btn',
+                'register-btn',
+                'auth-modal',
+                'auth-modal-close',
+                'auth-form'
+            ];
+            
+            let status = '<h4>Element Status:</h4>';
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                status += `<p>${id}: ${element ? '✅ Found' : '❌ Missing'}</p>`;
+            });
+            
+            document.getElementById('element-status').innerHTML = status;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            debugLog('🚀 DOM Content Loaded');
+            
+            // Check if elements exist
+            const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
+            const testModalBtn = document.getElementById('test-modal-btn');
+            const modalClose = document.getElementById('auth-modal-close');
+            
+            debugLog(`Login button: ${loginBtn ? 'Found' : 'Missing'}`);
+            debugLog(`Register button: ${registerBtn ? 'Found' : 'Missing'}`);
+            
+            // Add event listeners
+            if (loginBtn) {
+                loginBtn.addEventListener('click', () => {
+                    debugLog('🔐 Login button clicked!');
+                    showModal();
+                });
+                debugLog('✅ Login event listener added');
+            }
+            
+            if (registerBtn) {
+                registerBtn.addEventListener('click', () => {
+                    debugLog('📝 Register button clicked!');
+                    showModal();
+                });
+                debugLog('✅ Register event listener added');
+            }
+            
+            if (testModalBtn) {
+                testModalBtn.addEventListener('click', () => {
+                    debugLog('🧪 Test modal button clicked!');
+                    showModal();
+                });
+                debugLog('✅ Test modal event listener added');
+            }
+            
+            if (modalClose) {
+                modalClose.addEventListener('click', () => {
+                    debugLog('❌ Modal close button clicked!');
+                    hideModal();
+                });
+                debugLog('✅ Modal close event listener added');
+            }
+            
+            // Click outside to close
+            const modal = document.getElementById('auth-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        debugLog('📱 Clicked outside modal - closing');
+                        hideModal();
+                    }
+                });
+                debugLog('✅ Modal background click listener added');
+            }
+            
+            debugLog('🎉 All event listeners set up!');
+        });
+    </script>
+</body>
+</html> 
